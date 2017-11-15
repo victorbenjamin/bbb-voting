@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 public class VoteService {
 
-    private Subject<Boolean, Boolean> participant1;
-    private Subject<Boolean, Boolean> participant2;
+    private Subject<Boolean, Boolean> particip1;
+    private Subject<Boolean, Boolean> particip2;
     private Long count1 = 0L;
     private Long count2 = 0L;
 
@@ -24,33 +24,37 @@ public class VoteService {
     }
 
     public VoteService(Scheduler scheduler) {
-        this.participant1 = PublishSubject.create();
-        Observable<List<Boolean>> test1 = this.participant1.buffer(1, TimeUnit.SECONDS, scheduler);
-        this.participant2 = PublishSubject.create();
+        this.particip1 = PublishSubject.create();
+        this.particip2 = PublishSubject.create();
 
-        Observable<List<Boolean>> test2 = this.participant2.buffer(1, TimeUnit.SECONDS, scheduler);
-        when(from(test1).and(test2)
-                .then((p1, p2) -> new VoteGroup(p1.size(), p2.size(), Instant.now())))
-                .toObservable().subscribe(g -> {
-                    this.count1 += g.getParticip1();
-                    this.count2 += g.getParticip2();
+        when(
+                from(this.timeBuffer(this.particip1, scheduler)
+                ).and(this.timeBuffer(this.particip2, scheduler))
+                .then((p1, p2) -> new VoteGroup(p1, p2, Instant.now()))
+        ).toObservable().subscribe(g -> {
+            this.count1 += g.getParticip1();
+            this.count2 += g.getParticip2();
 
         });
     }
 
-    public void voteParcticipant1() {
-        participant1.onNext(true);
+    private Observable<Integer> timeBuffer(Observable<Boolean> particip, Scheduler scheduler) {
+        return particip.buffer(1, TimeUnit.SECONDS, scheduler).map(List::size);
     }
 
-    public void voteParcticipant2() {
-        participant2.onNext(true);
+    public void voteParticip1() {
+        particip1.onNext(true);
     }
 
-    public long getVotesParticipant1() {
+    public void voteParticip2() {
+        particip2.onNext(true);
+    }
+
+    public long getVotesParticip1() {
         return this.count1;
     }
 
-    public long getVotesParticipant2() {
+    public long getVotesParticip2() {
         return this.count2;
     }
 
