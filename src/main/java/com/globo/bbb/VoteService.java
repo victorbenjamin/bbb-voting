@@ -1,16 +1,21 @@
 package com.globo.bbb;
 
-import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
+import rx.Observable;
+import rx.Scheduler;
 
+import static rx.observables.JoinObservable.*;
+import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
+
+import java.time.Instant;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class VoteService {
 
-    private Subject<Boolean> participant1;
-    private Subject<Boolean> participant2;
+    private Subject<Boolean, Boolean> participant1;
+    private Subject<Boolean, Boolean> participant2;
     private Long count1 = 0L;
     private Long count2 = 0L;
 
@@ -20,9 +25,17 @@ public class VoteService {
 
     public VoteService(Scheduler scheduler) {
         this.participant1 = PublishSubject.create();
-        this.participant1.buffer(1, TimeUnit.SECONDS, scheduler).subscribe(c -> this.count1 += c.size());
+        Observable<List<Boolean>> test1 = this.participant1.buffer(1, TimeUnit.SECONDS, scheduler);
         this.participant2 = PublishSubject.create();
-        this.participant2.buffer(1, TimeUnit.SECONDS, scheduler).subscribe(c -> this.count2 += c.size());
+
+        Observable<List<Boolean>> test2 = this.participant2.buffer(1, TimeUnit.SECONDS, scheduler);
+        when(from(test1).and(test2)
+                .then((p1, p2) -> new VoteGroup(p1.size(), p2.size(), Instant.now())))
+                .toObservable().subscribe(g -> {
+                    this.count1 += g.getParticip1();
+                    this.count2 += g.getParticip2();
+
+        });
     }
 
     public void voteParcticipant1() {
