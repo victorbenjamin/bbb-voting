@@ -5,6 +5,7 @@ import rx.Scheduler;
 
 import static rx.observables.JoinObservable.*;
 import rx.subjects.PublishSubject;
+import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
 
 import java.util.Collection;
@@ -22,20 +23,29 @@ class VoteService {
 //    }
 
     VoteService(VotePersistence persistence, Scheduler scheduler) {
-        this.persistence = persistence;
-        this.particip1 = PublishSubject.create();
-        this.particip2 = PublishSubject.create();
+        this(persistence, scheduler, 1000);
+    }
 
-        final Observable<Integer> pcp1 = this.timeBuffer(this.particip1, scheduler);
-        final Observable<Integer> pcp2 = this.timeBuffer(this.particip2, scheduler);
+    VoteService(VotePersistence persistence, Scheduler scheduler, long timespan) {
+        this.persistence = persistence;
+        this.particip1 = this.createSubject();
+        this.particip2 = this.createSubject();
+
+        final Observable<Integer> pcp1 = this.timeBuffer(this.particip1, scheduler, timespan);
+        final Observable<Integer> pcp2 = this.timeBuffer(this.particip2, scheduler, timespan);
 
         when(from(pcp1).and(pcp2).then(VotesHour::new))
                 .toObservable()
                 .subscribe(this.persistence::persist);
     }
 
-    private Observable<Integer> timeBuffer(Observable<Boolean> particip, Scheduler scheduler) {
-        return particip.buffer(1, TimeUnit.SECONDS, scheduler).map(List::size);
+    private Subject<Boolean, Boolean> createSubject() {
+        final Subject<Boolean, Boolean> particip1 = PublishSubject.create();
+        return particip1.toSerialized();
+    }
+
+    private Observable<Integer> timeBuffer(Observable<Boolean> particip, Scheduler scheduler, long timespan) {
+        return particip.buffer(timespan, TimeUnit.MILLISECONDS, scheduler).map(List::size);
     }
 
     void voteParticip1() {

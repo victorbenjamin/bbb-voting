@@ -1,21 +1,18 @@
 package com.globo.bbb;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import static org.mockito.Mockito.*;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import rx.schedulers.TestScheduler;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public class VoteServiceTests {
 
     private VoteService service;
@@ -50,17 +47,18 @@ public class VoteServiceTests {
 
     @Test
     public void test2ALoteVotes() {
-        IntStream.range(0, 1_000_000).forEach(i -> {
+        final VoteService service = new VoteService(this.persistence, this.scheduler, 100);
+        IntStream.range(0, 2_500_000).forEach(i -> {
             service.voteParticip1();
             service.voteParticip2();
         });
-        scheduler.advanceTimeBy(1200, TimeUnit.MILLISECONDS);
+        scheduler.advanceTimeBy(1000, TimeUnit.MILLISECONDS);
         Collection<VotesHour> votes = service.getVotes();
         long particip1 = votes.stream().mapToLong(VotesHour::getParticip1).sum();
         long particip2 = votes.stream().mapToLong(VotesHour::getParticip2).sum();
-        verify(this.persistence, times(1)).persist(any(VotesHour.class));
-        assertEquals(1_000_000, particip1);
-        assertEquals(1_000_000, particip2);
+        verify(this.persistence, times(11)).persist(any(VotesHour.class));
+        assertEquals(2_500_000, particip1);
+        assertEquals(2_500_000, particip2);
     }
 
 }
