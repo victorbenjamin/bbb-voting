@@ -1,11 +1,15 @@
-package com.globo.bbb.com.globo.bbb.votes;
+package com.globo.bbb.votes;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-public class VotesHour {
+@Document(collection = "VotesHour")
+public class VotesHour implements Comparable<VotesHour> {
+
+    public static VotesHour NO_VOTES = new VotesHour(0,0);
 
     @Id
     private LocalDateTime hour;
@@ -38,13 +42,26 @@ public class VotesHour {
         return hour;
     }
 
+    public long getTotal() {
+        return this.particip1 + this.particip2;
+    }
+
     public boolean isEmpty() {
-        return this.getParticip1() == 0 && this.getParticip2() == 0;
+        return this.getTotal() == 0;
     }
 
     VotesHour plus(VotesHour votes) {
         if (!votes.hour.equals(this.hour)) throw new IllegalArgumentException();
         return new VotesHour(this.particip1 + votes.getParticip1(),
                 this.particip2 + votes.particip2, this.hour);
+    }
+
+    VotesHourResume getResume() {
+        return new VotesHourResume(this);
+    }
+
+    @Override
+    public int compareTo(VotesHour o) {
+        return this.hour.compareTo(o.hour);
     }
 }

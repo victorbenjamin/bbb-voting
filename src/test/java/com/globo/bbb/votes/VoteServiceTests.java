@@ -1,10 +1,9 @@
-package com.globo.bbb.com.globo.bbb.votes;
+package com.globo.bbb.votes;
 
 import org.junit.Before;
 import org.junit.Test;
 import rx.schedulers.TestScheduler;
 
-import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
@@ -23,12 +22,12 @@ public class VoteServiceTests {
     public void before() {
         this.persistence = spy(new StubPersistence());
         this.scheduler = new TestScheduler();
-        this.service = new VoteService(this.persistence, this.scheduler, 1000);
+        this.service = new VoteService(this.persistence, 1000, this.scheduler);
     }
 
 	@Test
 	public void test1ZeroVotes() {
-		assertEquals(0, this.service.getVotes().size());
+		assertEquals(0, this.service.getVotes().getTotal());
 	}
 
     @Test
@@ -36,29 +35,25 @@ public class VoteServiceTests {
         service.voteParticip1();
         service.voteParticip1();
         service.voteParticip2();
-        scheduler.advanceTimeBy(1200, TimeUnit.MILLISECONDS);
-        Collection<VotesHour> votes = service.getVotes();
-        long particip1 = votes.stream().mapToLong(VotesHour::getParticip1).sum();
-        long particip2 = votes.stream().mapToLong(VotesHour::getParticip2).sum();
+        scheduler.advanceTimeBy(2000, TimeUnit.MILLISECONDS);
+        AllVotes votes = service.getVotes();
 
-        assertEquals(2, particip1);
-        assertEquals(1, particip2);
+        assertEquals(2, votes.getParticip1());
+        assertEquals(1, votes.getParticip2());
     }
 
     @Test
     public void test2ALoteVotes() {
-        final VoteService service = new VoteService(this.persistence, this.scheduler, 100);
+        final VoteService service = new VoteService(this.persistence, 100, this.scheduler);
         IntStream.range(0, 2_500_000).forEach(i -> {
             service.voteParticip1();
             service.voteParticip2();
         });
         scheduler.advanceTimeBy(1050, TimeUnit.MILLISECONDS);
-        Collection<VotesHour> votes = service.getVotes();
-        long particip1 = votes.stream().mapToLong(VotesHour::getParticip1).sum();
-        long particip2 = votes.stream().mapToLong(VotesHour::getParticip2).sum();
+        AllVotes votes = service.getVotes();
         verify(this.persistence, times(11)).persist(any(VotesHour.class));
-        assertEquals(2_500_000, particip1);
-        assertEquals(2_500_000, particip2);
+        assertEquals(2_500_000, votes.getParticip1());
+        assertEquals(2_500_000, votes.getParticip2());
     }
 
 }

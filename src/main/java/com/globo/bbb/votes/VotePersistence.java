@@ -1,4 +1,4 @@
-package com.globo.bbb.com.globo.bbb.votes;
+package com.globo.bbb.votes;
 
 import java.util.Collection;
 
