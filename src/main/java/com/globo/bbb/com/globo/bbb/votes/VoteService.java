@@ -1,9 +1,12 @@
 package com.globo.bbb.com.globo.bbb.votes;
 
+import org.springframework.beans.factory.annotation.Value;
 import rx.Observable;
 import rx.Scheduler;
 
 import static rx.observables.JoinObservable.*;
+
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 
@@ -17,15 +20,11 @@ class VoteService {
     private Subject<Boolean, Boolean> particip2;
     private VotePersistence persistence;
 
-//    public VoteService(VotePersistence persistence) {
-//        this(persistence, Schedulers.computation());
-//    }
-
-    VoteService(VotePersistence persistence, Scheduler scheduler) {
-        this(persistence, scheduler, 1000);
+    public VoteService(VotePersistence persistence, @Value("${buffer.timeout}") long timespan) {
+        this(persistence, Schedulers.computation(), timespan);
     }
 
-    VoteService(VotePersistence persistence, Scheduler scheduler, long timespan) {
+    VoteService(VotePersistence persistence, Scheduler scheduler, @Value("${buffer.timeout}") long timespan) {
         this.persistence = persistence;
         this.particip1 = this.createSubject();
         this.particip2 = this.createSubject();

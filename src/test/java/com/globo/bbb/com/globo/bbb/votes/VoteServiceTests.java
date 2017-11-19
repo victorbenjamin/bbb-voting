@@ -23,7 +23,7 @@ public class VoteServiceTests {
     public void before() {
         this.persistence = spy(new StubPersistence());
         this.scheduler = new TestScheduler();
-        this.service = new VoteService(this.persistence, this.scheduler);
+        this.service = new VoteService(this.persistence, this.scheduler, 1000);
     }
 
 	@Test

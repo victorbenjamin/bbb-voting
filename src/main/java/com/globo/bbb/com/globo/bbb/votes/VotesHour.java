@@ -1,34 +1,45 @@
 package com.globo.bbb.com.globo.bbb.votes;
 
-import java.time.Instant;
+import org.springframework.data.annotation.Id;
+
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-class VotesHour {
+public class VotesHour {
+
+    @Id
+    private LocalDateTime hour;
+
 
     private long particip1;
     private long particip2;
-    private Instant hour;
 
-    VotesHour(long particip1, long particip2) {
-        this(particip1, particip2, Instant.now().truncatedTo(ChronoUnit.HOURS));
+    public VotesHour(long particip1, long particip2) {
+        this(particip1, particip2, LocalDateTime.now().truncatedTo(ChronoUnit.HOURS));
     }
 
-    private VotesHour(long particip1, long particip2, Instant hour) {
+    private VotesHour(long particip1, long particip2, LocalDateTime hour) {
         this.particip1 = particip1;
         this.particip2 = particip2;
         this.hour = hour;
     }
 
-    long getParticip1() {
+    private VotesHour() {}
+
+    public long getParticip1() {
         return particip1;
     }
 
-    long getParticip2() {
+    public long getParticip2() {
         return particip2;
     }
 
-    Instant getHour() {
+    public LocalDateTime getHour() {
         return hour;
+    }
+
+    public boolean isEmpty() {
+        return this.getParticip1() == 0 && this.getParticip2() == 0;
     }
 
     VotesHour plus(VotesHour votes) {
