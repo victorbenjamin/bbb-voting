@@ -1,11 +1,10 @@
-package com.globo.bbb;
+package com.globo.bbb.com.globo.bbb.votes;
 
 import rx.Observable;
 import rx.Scheduler;
 
 import static rx.observables.JoinObservable.*;
 import rx.subjects.PublishSubject;
-import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
 
 import java.util.Collection;

@@ -1,4 +1,7 @@
-package com.globo.bbb;
+package com.globo.bbb.com.globo.bbb.votes;
+
+import com.globo.bbb.com.globo.bbb.votes.VotePersistence;
+import com.globo.bbb.com.globo.bbb.votes.VotesHour;
 
 import java.time.Instant;
 import java.util.Collection;

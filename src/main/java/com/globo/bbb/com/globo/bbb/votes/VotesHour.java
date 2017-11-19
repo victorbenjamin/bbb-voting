@@ -1,4 +1,4 @@
-package com.globo.bbb;
+package com.globo.bbb.com.globo.bbb.votes;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

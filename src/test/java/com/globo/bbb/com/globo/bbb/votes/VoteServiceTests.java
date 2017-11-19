@@ -1,4 +1,4 @@
-package com.globo.bbb;
+package com.globo.bbb.com.globo.bbb.votes;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class VoteServiceTests {
             service.voteParticip1();
             service.voteParticip2();
         });
-        scheduler.advanceTimeBy(1000, TimeUnit.MILLISECONDS);
+        scheduler.advanceTimeBy(1050, TimeUnit.MILLISECONDS);
         Collection<VotesHour> votes = service.getVotes();
         long particip1 = votes.stream().mapToLong(VotesHour::getParticip1).sum();
         long particip2 = votes.stream().mapToLong(VotesHour::getParticip2).sum();
