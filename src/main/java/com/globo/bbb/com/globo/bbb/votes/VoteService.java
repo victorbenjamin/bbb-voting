@@ -14,17 +14,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-class VoteService {
+public class VoteService {
 
     private Subject<Boolean, Boolean> particip1;
     private Subject<Boolean, Boolean> particip2;
     private VotePersistence persistence;
 
     public VoteService(VotePersistence persistence, @Value("${buffer.timeout}") long timespan) {
-        this(persistence, Schedulers.computation(), timespan);
+        this(persistence, timespan, Schedulers.computation());
     }
 
-    VoteService(VotePersistence persistence, Scheduler scheduler, @Value("${buffer.timeout}") long timespan) {
+    VoteService(VotePersistence persistence, @Value("${buffer.timeout}") long timespan, Scheduler scheduler) {
         this.persistence = persistence;
         this.particip1 = this.createSubject();
         this.particip2 = this.createSubject();
