@@ -40,6 +40,8 @@ public class VoteServiceTests {
 
         assertEquals(2, votes.getParticip1());
         assertEquals(1, votes.getParticip2());
+
+        assertEquals(3, votes.getTotal());
     }
 
     @Test
@@ -54,6 +56,7 @@ public class VoteServiceTests {
         verify(this.persistence, times(11)).persist(any(VotesHour.class));
         assertEquals(2_500_000, votes.getParticip1());
         assertEquals(2_500_000, votes.getParticip2());
+        assertEquals(5_000_000, votes.getTotal());
     }
 
 }
