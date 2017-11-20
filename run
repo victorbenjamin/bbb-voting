@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+docker swarm init
+docker stack deploy -c docker-compose.yml  bbbweb
+docker service logs bbbweb_bbb -f
