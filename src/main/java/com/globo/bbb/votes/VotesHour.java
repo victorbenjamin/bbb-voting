@@ -56,10 +56,6 @@ public class VotesHour implements Comparable<VotesHour> {
                 this.particip2 + votes.particip2, this.hour);
     }
 
-    VotesHourResume getResume() {
-        return new VotesHourResume(this);
-    }
-
     @Override
     public int compareTo(VotesHour o) {
         return this.hour.compareTo(o.hour);

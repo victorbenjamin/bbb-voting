@@ -14,7 +14,7 @@ class AllVotes {
         final long p1 = votes.stream().mapToLong(VotesHour::getParticip1).sum();
         final long p2 = votes.stream().mapToLong(VotesHour::getParticip2).sum();
         this.percentualVotes = new PercentualVotes(p1, p2);
-        this.votesPerHour = votes.stream().map(VotesHour::getResume).toArray();
+        this.votesPerHour = votes.stream().map(VotesHourResume::new).toArray();
         this.total = p1 + p2;
         this.particip1 = p1;
         this.particip2 = p2;

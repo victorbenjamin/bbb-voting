@@ -28,18 +28,18 @@ public class VoteService {
         this.persistence = persistence;
         this.particip1 = this.createSubject();
         this.particip2 = this.createSubject();
-        loadVotes();
-        Observable.interval(timespan, TimeUnit.MILLISECONDS, scheduler).subscribe(c -> this.loadVotes());
+        this.persistAndLoad(VotesHour.NO_VOTES);
 
         final Observable<Integer> pcp1 = this.timeBuffer(this.particip1, scheduler, timespan);
         final Observable<Integer> pcp2 = this.timeBuffer(this.particip2, scheduler, timespan);
 
         when(from(pcp1).and(pcp2).then(VotesHour::new))
                 .toObservable()
-                .subscribe(this.persistence::persist);
+                .subscribe(this::persistAndLoad);
     }
 
-    private void loadVotes() {
+    private void persistAndLoad(VotesHour votes) {
+        this.persistence.persist(votes);
         this.votes = new AllVotes(persistence.all());
     }
 
