@@ -1,0 +1,17 @@
+version: "3.3"
+services:
+  bbb:
+    build: .
+    image: bbb:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - bbbnet
+  bbbmongo:
+    image: mongo:3.4
+    ports:
+      - "27017:27017"
+    networks:
+      - bbbnet
+networks:
+  bbbnet:
