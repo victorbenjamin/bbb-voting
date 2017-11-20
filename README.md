@@ -1,5 +1,16 @@
 # Desafio Globo.com
 
+## Solução
+
+A primeira coisa que pensei quando li o problema foi em desenvolver algo escalável horizontalmente, porém ainda não sabia como. No caso, tanto escrita (votos) quanto leitura (porcentagem parcial) teriam demanda alta. Antes mesmo de botar a mão no código as primeiras ideias que vieram, foram com cache e fila. Com cache conseguiria aliviar a leitura, mas na escrita, precisaria de um controle complexo, ainda assim não conseguia pensar em algo que escalasse. Com fila, seriam muitas mensagens na fila, uma por voto. Mas no consumo da fila, seu eu não agrupasse os votos ainda assim seria muito demanda pro banco.
+
+Depois, a solução que me veio, seria bufferizar os votos, e fazer flush no banco. O critério seria o tempo, um segundo. Então, a cada um segundo se iria no banco, tanto pra escrita, quanto pra leitura. Num cluster da aplicação, cada nó só precisaria de uma conexão ativa com o banco e escalaria horizontamente. O limite de nós no cluster, seria o número de conexões possíveis no banco.
+
+Definida a arquitetura, fazer esse buffer controlando de forma imperativa, duas variáveis contadoras de votos, uma pra cada participante, me parecia complicado, embora possivel. Foi quando eu pensei no RX(http://reactivex.io/). Num modelo mas reativo, me parecia mais simples, pois não teria que controlar variáveis.
+
+Agora eu teria que definir a linguagem e banco. Eu optei por trabalhar com o que eu tenho mais conhecimento, devido ao tempo escasso. No dia-a-dia, hoje, eu trabalho com NodeJs, Mongo e Mysql. NodeJs não estava entre as possibilidades, então escolhi Java, embora tenha 3 anos sem contato, trabalhei muitos anos com o mesmo. Já o banco, optei pelo mongo, por causa das operações de upsert e $inc, seria de grande ajuda.
+
+Pra adicionar a essa stack, resolvi trabalhar com sprint boot e gradle.
 
 ## Engenheiro de Software - GloboID
 
