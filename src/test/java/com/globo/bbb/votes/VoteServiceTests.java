@@ -53,7 +53,7 @@ public class VoteServiceTests {
         });
         scheduler.advanceTimeBy(1050, TimeUnit.MILLISECONDS);
         AllVotes votes = service.getVotes();
-        verify(this.persistence, times(11)).persist(any(VotesHour.class));
+        verify(this.persistence, times(13)).persist(any(VotesHour.class));
         assertEquals(2_500_000, votes.getParticip1());
         assertEquals(2_500_000, votes.getParticip2());
         assertEquals(5_000_000, votes.getTotal());
