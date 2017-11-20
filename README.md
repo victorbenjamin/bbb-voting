@@ -24,9 +24,11 @@ Só foi testado no Mac. Foi deixado a porta 27017 exposta propositalmente pra av
 
 ## Endpoints
 
+```
 GET /vote/resume
 POST /vote/particip/1
 POST /vote/particip/2
+```
 
 Nenhum deles precisa de corpo pra funcionar.
 
