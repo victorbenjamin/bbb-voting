@@ -4,6 +4,8 @@ import java.util.Collection;
 
 class AllVotes {
 
+    static AllVotes EMPTY_VOTES = new AllVotes(VotePersistence.EMPTY_VOTES);
+
     private long particip2;
     private long particip1;
     private PercentualVotes percentualVotes;

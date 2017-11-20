@@ -1,5 +1,6 @@
 package com.globo.bbb.votes;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import rx.Observable;
 import rx.Scheduler;
@@ -7,6 +8,7 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -14,6 +16,8 @@ import static rx.observables.JoinObservable.from;
 import static rx.observables.JoinObservable.when;
 
 public class VoteService {
+
+    private static Logger LOGGER = Logger.getLogger(VoteService.class);
 
     private Subject<Boolean, Boolean> particip1;
     private Subject<Boolean, Boolean> particip2;
@@ -39,8 +43,13 @@ public class VoteService {
     }
 
     private void persistAndLoad(VotesHour votes) {
-        this.persistence.persist(votes);
-        this.votes = new AllVotes(persistence.all());
+        try {
+            this.persistence.persist(votes);
+            this.votes = new AllVotes(persistence.all());
+        } catch (Throwable t) {
+            if (this.votes == null) this.votes = AllVotes.EMPTY_VOTES;
+            LOGGER.error("Error on go to persistence", t);
+        }
     }
 
     private Subject<Boolean, Boolean> createSubject() {

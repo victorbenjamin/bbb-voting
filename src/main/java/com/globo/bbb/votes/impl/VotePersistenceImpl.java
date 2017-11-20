@@ -16,8 +16,6 @@ import java.util.List;
 @Repository
 class VotePersistenceImpl implements VotePersistence {
 
-    private static Collection<VotesHour> EMPTY_VOTES = Collections.singleton(VotesHour.NO_VOTES);
-
     @Autowired
     private MongoTemplate mongoTemplate;
 
