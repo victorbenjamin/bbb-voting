@@ -1,14 +1,12 @@
 package com.globo.bbb.votes;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import rx.Observable;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -24,11 +22,11 @@ public class VoteService {
     private VotePersistence persistence;
     private volatile AllVotes votes;
 
-    public VoteService(VotePersistence persistence, @Value("${buffer.timeout}") long timespan) {
+    public VoteService(VotePersistence persistence, long timespan) {
         this(persistence, timespan, Schedulers.computation());
     }
 
-    VoteService(VotePersistence persistence, @Value("${buffer.timeout}") long timespan, Scheduler scheduler) {
+    VoteService(VotePersistence persistence, long timespan, Scheduler scheduler) {
         this.persistence = persistence;
         this.particip1 = this.createSubject();
         this.particip2 = this.createSubject();
