@@ -47,8 +47,8 @@ public class VoteService {
             this.persistence.persist(votes);
             this.votes = new AllVotes(persistence.all());
         } catch (Throwable t) {
-            if (this.votes == null) this.votes = AllVotes.EMPTY_VOTES;
             LOGGER.error("Error on go to persistence", t);
+            System.exit(1);
         }
     }
 

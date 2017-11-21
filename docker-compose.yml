@@ -5,6 +5,7 @@ services:
     image: bbb:latest
     ports:
       - "8080:8080"
+    restart: unless-stopped
     networks:
       - bbbnet
   bbbmongo:
