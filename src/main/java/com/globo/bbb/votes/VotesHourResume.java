@@ -1,6 +1,6 @@
 package com.globo.bbb.votes;
 
-public class VotesHourResume {
+public class VotesHourResume implements Comparable<VotesHourResume> {
 
     private long total;
     private String hour;
@@ -16,5 +16,11 @@ public class VotesHourResume {
 
     public long getTotal() {
         return this.total;
+    }
+
+
+    @Override
+    public int compareTo(VotesHourResume o) {
+        return this.hour.compareTo(o.hour);
     }
 }
